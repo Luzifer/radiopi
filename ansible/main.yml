@@ -1,0 +1,70 @@
+---
+
+- hosts: radiopi
+  remote_user: pi
+  sudo: yes
+
+  vars:
+
+  tasks:
+    - include_vars: vars/secret.yml
+    - name: resize rootfs
+      copy: src=files/raspi-expand-rootfs.sh dest=/usr/local/bin/raspi-expand-rootfs.sh mode=0755
+      notify:
+        - exec_resize_rootfs
+      tags:
+        - init
+
+    - name: Remove raspi-config prompt
+      lineinfile: dest=/etc/ld.so.preload regexp="libcofi_rpi.so" state=absent
+
+    - name: configure apt
+      file: path=/etc/apt/sources.list.d/raspi.list state=absent
+    - copy: src=files/sources.list dest=/etc/apt/sources.list
+
+    - name: Update system
+      apt: upgrade=dist update_cache=yes dpkg_options='force-confold,force-confdef'
+      tags:
+        - systemupdate
+
+    - name: ensure network connection
+      cron:
+        name: "ensure network"
+        minute: "*/2"
+        job: 'bash -c "ping -q -c2 8.8.8.8 || (ifdown --force wlan0 ;ifup wlan0 )"'
+
+    - name: configure WiFi
+      template:
+        dest: /etc/network/interfaces
+        src: templates/interfaces.j2
+
+    - name: install required packages
+      apt:
+        name: "{{ item }}"
+        update_cache: yes
+      with_items:
+        - mpg123
+        - unzip
+
+    - name: Start radiopi-server on startup
+      copy: src=files/bash_profile dest=/home/pi/.bash_profile owner=pi group=pi
+      notify:
+        - restart login
+
+    - name: Login pi at startup
+      replace: dest=/etc/inittab regexp='^1:.*getty.*$' replace='1:2345:respawn:/bin/login -f pi tty1 </dev/tty1 >/dev/tty1 2>&1'
+      replace: dest=/etc/inittab regexp='^1:.*RPICFG_TO_DISABLE' replace='1:2345:respawn:/bin/login -f pi tty1 </dev/tty1 >/dev/tty1 2>&1'
+      notify:
+        - reboot
+
+  handlers:
+    - name: restart login
+      command: killall login
+
+    - name: exec_resize_rootfs
+      command: /usr/local/bin/raspi-expand-rootfs.sh
+      notify:
+        - reboot
+
+    - name: reboot
+      command: reboot

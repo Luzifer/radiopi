@@ -1,0 +1,3 @@
+if [ -z "$DISPLAY" ] && [ $(tty) == /dev/tty1 ]; then
+    /usr/local/bin/radiopi
+fi
