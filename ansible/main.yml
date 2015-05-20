@@ -5,6 +5,7 @@
   sudo: yes
 
   vars:
+    radiopi_version: master
 
   tasks:
     - include_vars: vars/secret.yml
@@ -46,14 +47,38 @@
         - mpg123
         - unzip
 
+
+    - name: create assets dir
+      file: dest=/opt/ansible-assets state=directory
+
+    - name: download radiopi server
+      command: "curl -L https://gobuilder.me/get/github.com/Luzifer/radiopi/radiopi_{{ radiopi_version }}_linux-arm.zip -o /opt/ansible-assets/radiopi_{{ radiopi_version }}_linux-arm.zip"
+      args:
+        creates: "/opt/ansible-assets/radiopi_{{ radiopi_version }}_linux-arm.zip"
+
+    - name: install radiopi server
+      shell: "unzip -o /opt/ansible-assets/radiopi_{{ radiopi_version }}_linux-arm.zip && mv radiopi/radiopi /usr/local/bin/radiopi_{{ radiopi_version }}"
+      args:
+        chdir: /tmp/
+        creates: "/usr/local/bin/radiopi_{{ radiopi_version }}"
+
+    - name: Link radiopi server
+      file:
+        src: "/usr/local/bin/radiopi_{{ radiopi_version }}"
+        dest: /usr/local/bin/radiopi
+        state: link
+      notify:
+        - restart login
+
+
     - name: Start radiopi-server on startup
       copy: src=files/bash_profile dest=/home/pi/.bash_profile owner=pi group=pi
       notify:
         - restart login
 
     - name: Login pi at startup
-      replace: dest=/etc/inittab regexp='^1:.*getty.*$' replace='1:2345:respawn:/bin/login -f pi tty1 </dev/tty1 >/dev/tty1 2>&1'
-      replace: dest=/etc/inittab regexp='^1:.*RPICFG_TO_DISABLE' replace='1:2345:respawn:/bin/login -f pi tty1 </dev/tty1 >/dev/tty1 2>&1'
+      replace: dest=/etc/inittab regexp='^1:.*getty.*$' replace='1:2345:respawn:/usr/local/bin/radiopi'
+      replace: dest=/etc/inittab regexp='^1:.*RPICFG_TO_DISABLE' replace='1:2345:respawn:/usr/local/bin/radiopi'
       notify:
         - reboot
 

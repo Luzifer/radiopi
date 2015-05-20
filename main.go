@@ -23,10 +23,6 @@ func init() {
 
 	storeFile = flag.String("cache", "/home/pi/.radiopi", "Cache file to store last stream URL")
 	flag.Parse()
-
-	if lastStream, err := ioutil.ReadFile(*storeFile); err == nil {
-		streamChangeChan <- string(lastStream)
-	}
 }
 
 func main() {
@@ -34,7 +30,12 @@ func main() {
 	r.HandleFunc("/v1/play", playStream).Methods("POST")
 
 	http.Handle("/", r)
-	go http.ListenAndServe(":8080", nil)
+	go http.ListenAndServe(":80", nil)
+
+	if lastStream, err := ioutil.ReadFile(*storeFile); err == nil {
+		playingStream = string(lastStream)
+		go restartPlayer()
+	}
 
 	for {
 		select {
@@ -42,7 +43,11 @@ func main() {
 			go restartPlayer()
 		case stream := <-streamChangeChan:
 			playingStream = stream
-			playerCmd.Process.Kill()
+			if playerCmd != nil && playerCmd.Process != nil {
+				playerCmd.Process.Kill()
+			} else {
+				deadChan <- true
+			}
 			ioutil.WriteFile(*storeFile, []byte(stream), 0600)
 		}
 	}

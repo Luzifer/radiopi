@@ -3,7 +3,8 @@ iface lo inet loopback
 
 auto eth0
 allow-hotplug eth0
-iface eth0 inet manual
+iface eth0 inet dhcp
+  metric    100
 
 auto wlan0
 allow-hotplug wlan0
@@ -13,5 +14,6 @@ iface wlan0 inet static
   network   192.168.1.0
   broadcast 192.168.1.255
   gateway   192.168.1.1
+  metric    500
   wpa-ssid  "{{ wifi_name }}"
   wpa-psk   "{{ wifi_pass }}"
