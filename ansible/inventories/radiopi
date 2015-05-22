@@ -1,1 +1,1 @@
-radiopi   ansible_ssh_host=10.228.0.14
+radiopi   ansible_ssh_host=192.168.1.99
