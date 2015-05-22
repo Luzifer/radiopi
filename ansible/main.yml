@@ -68,13 +68,13 @@
         dest: /usr/local/bin/radiopi
         state: link
       notify:
-        - restart login
+        - restart radiopi
 
 
     - name: Start radiopi-server on startup
       copy: src=files/bash_profile dest=/home/pi/.bash_profile owner=pi group=pi
       notify:
-        - restart login
+        - restart radiopi
 
     - name: Login pi at startup
       replace: dest=/etc/inittab regexp='^1:.*getty.*$' replace='1:2345:respawn:/usr/local/bin/radiopi'
@@ -83,8 +83,8 @@
         - reboot
 
   handlers:
-    - name: restart login
-      command: killall login
+    - name: restart radiopi
+      command: killall radiopi
 
     - name: exec_resize_rootfs
       command: /usr/local/bin/raspi-expand-rootfs.sh
