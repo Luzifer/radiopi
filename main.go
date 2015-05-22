@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os/exec"
 
+	"github.com/Luzifer/radiopi/icecast"
 	"github.com/gorilla/mux"
 )
 
@@ -15,22 +16,36 @@ var (
 	streamChangeChan chan string
 	playingStream    string
 	storeFile        *string
+	directory        *icecast.Directory
+	listen           *string
 )
 
 func init() {
+	var err error
+
 	deadChan = make(chan bool)
 	streamChangeChan = make(chan string)
 
 	storeFile = flag.String("cache", "/home/pi/.radiopi", "Cache file to store last stream URL")
+	directoryCache := flag.String("directory-file", "/home/pi/.radiopi.directory", "File to cache the IceCast directory to")
+	listen = flag.String("listen", ":80", "Listen address for the daemon")
 	flag.Parse()
+
+	directory, err = icecast.New(*directoryCache, "audio/mpeg")
+	if err != nil {
+		panic(err)
+	}
+	directory.SaveCache()
 }
 
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/v1/play", playStream).Methods("POST")
+	r.HandleFunc("/v1/search", getFilteredDirectoryList).Methods("GET")
+	r.PathPrefix("/").HandlerFunc(serveStatic)
 
 	http.Handle("/", r)
-	go http.ListenAndServe(":80", nil)
+	go http.ListenAndServe(*listen, nil)
 
 	if lastStream, err := ioutil.ReadFile(*storeFile); err == nil {
 		playingStream = string(lastStream)
@@ -57,13 +72,4 @@ func restartPlayer() {
 	playerCmd = exec.Command("/usr/bin/mpg123", "--no-gapless", playingStream)
 	playerCmd.Run()
 	deadChan <- true
-}
-
-func playStream(res http.ResponseWriter, r *http.Request) {
-	if len(r.FormValue("stream")) > 0 {
-		streamChangeChan <- r.FormValue("stream")
-		http.Error(res, "OK", http.StatusOK)
-		return
-	}
-	http.Error(res, "Please provide a stream", http.StatusInternalServerError)
 }
