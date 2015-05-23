@@ -70,7 +70,7 @@ func main() {
 }
 
 func restartPlayer() {
-	playerCmd = exec.Command("/usr/bin/mpg123", "--no-gapless", playingStream)
+	playerCmd = exec.Command("/usr/bin/mpg123", "-b", "1024", "--no-gapless", playingStream)
 	playerCmd.Run()
 	deadChan <- true
 }
