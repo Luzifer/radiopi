@@ -18,7 +18,7 @@ var (
 	storeFile        *string
 	directory        *icecast.Directory
 	listen           *string
-	version          = "0.3.0"
+	version          = "0.4.0"
 )
 
 func init() {
