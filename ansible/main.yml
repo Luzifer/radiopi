@@ -5,7 +5,7 @@
   sudo: yes
 
   vars:
-    radiopi_version: v0.4.0
+    radiopi_version: v0.5.0
 
   tasks:
     - include_vars: vars/secret.yml
@@ -81,6 +81,11 @@
       replace: dest=/etc/inittab regexp='^1:.*RPICFG_TO_DISABLE' replace='1:2345:respawn:/usr/local/bin/radiopi'
       notify:
         - reboot
+
+    - name: Configure favorite stations
+      copy:
+        src: files/favorites.yml
+        dest: /home/pi/.radiopi.favorites
 
   handlers:
     - name: restart radiopi

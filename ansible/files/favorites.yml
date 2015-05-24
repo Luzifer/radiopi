@@ -1,0 +1,7 @@
+---
+- name: Vox Noctem
+  url: http://r2d2.voxnoctem.com:8000/voxnoctem.mp3
+- name: HardBase.fm
+  url: http://listen.hardbase.fm/tunein-mp3-pls
+- name: ZwischenWelten
+  url: http://zwischen-welten.info:8000/listen/

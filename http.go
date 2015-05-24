@@ -38,6 +38,16 @@ func getFilteredDirectoryList(res http.ResponseWriter, r *http.Request) {
 	res.Write(out)
 }
 
+func getFavorites(res http.ResponseWriter, r *http.Request) {
+	body, err := json.Marshal(favorites)
+	if err != nil {
+		http.Error(res, "An error ocurred", http.StatusInternalServerError)
+	}
+
+	res.Header().Add("Content-Type", "application/json")
+	res.Write(body)
+}
+
 func serveStatic(res http.ResponseWriter, r *http.Request) {
 	p := strings.TrimLeft(r.URL.Path, "/")
 	if len(p) == 0 {

@@ -3,6 +3,7 @@ $ ->
   $('#searchInput').bind 'keydown', () ->
     clearTimeout(window.searchInputTimer)
     window.searchInputTimer = setTimeout searchInputType, 1000
+  loadFavorites()
 
 playButtonClick = () ->
   url = $('#urlInput').val()
@@ -34,3 +35,18 @@ searchInputType = () ->
 urlListClick = () ->
   url = $(this).data 'url'
   submitPlay url
+
+loadFavorites = () ->
+  $.get "/v1/favorites", (data) ->
+    if data.length > 0
+      $('#favoritePanel').removeClass("hidden")
+    else
+      $('#favoritePanel').addClass("hidden")
+    $('#favoriteList').empty()
+    for entry in data
+      a = $("<a>#{entry.name}</a>")
+      a.attr 'href', 'javascript:void(0)'
+      a.attr 'class', 'list-group-item'
+      a.data 'url', entry.url
+      a.bind 'click', urlListClick
+      a.appendTo $('#favoriteList')

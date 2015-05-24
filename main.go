@@ -18,7 +18,9 @@ var (
 	storeFile        *string
 	directory        *icecast.Directory
 	listen           *string
-	version          = "0.4.0"
+	favoritesFile    *string
+	favorites        []favorite
+	version          = "0.5.0"
 )
 
 func init() {
@@ -29,6 +31,7 @@ func init() {
 
 	storeFile = flag.String("cache", "/home/pi/.radiopi", "Cache file to store last stream URL")
 	directoryCache := flag.String("directory-file", "/home/pi/.radiopi.directory", "File to cache the IceCast directory to")
+	favoritesFile = flag.String("favorites", "/home/pi/.radiopi.favorites", "File to store the favorites in")
 	listen = flag.String("listen", ":80", "Listen address for the daemon")
 	flag.Parse()
 
@@ -37,12 +40,15 @@ func init() {
 		panic(err)
 	}
 	directory.SaveCache()
+
+	loadFavorites()
 }
 
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/v1/play", playStream).Methods("POST")
 	r.HandleFunc("/v1/search", getFilteredDirectoryList).Methods("GET")
+	r.HandleFunc("/v1/favorites", getFavorites).Methods("GET")
 	r.PathPrefix("/").HandlerFunc(serveStatic)
 
 	http.Handle("/", r)
