@@ -1,6 +1,8 @@
 ---
 - name: Vox Noctem
   url: http://r2d2.voxnoctem.com:8000/voxnoctem.mp3
+- name: Vox Noctem (Mobile)
+  url: http://r2d2.voxnoctem.com:8001/
 - name: HardBase.fm
   url: http://listen.hardbase.fm/tunein-mp3-pls
 - name: ZwischenWelten
