@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os/exec"
+	"strings"
+	"time"
 
 	"github.com/Luzifer/radiopi/icecast"
 	"github.com/gorilla/mux"
@@ -20,7 +22,8 @@ var (
 	listen           *string
 	favoritesFile    *string
 	favorites        []favorite
-	version          = "0.5.0"
+	version          = "dev"
+	netMonInterfaces *string
 )
 
 func init() {
@@ -33,7 +36,10 @@ func init() {
 	directoryCache := flag.String("directory-file", "/home/pi/.radiopi.directory", "File to cache the IceCast directory to")
 	favoritesFile = flag.String("favorites", "/home/pi/.radiopi.favorites", "File to store the favorites in")
 	listen = flag.String("listen", ":80", "Listen address for the daemon")
+	netMonInterfaces = flag.String("interfaces", "eth0,wlan0", "Interfaces to watch for traffic")
 	flag.Parse()
+
+	netmon.Interfaces = strings.Split(*netMonInterfaces, ",")
 
 	directory, err = icecast.New(*directoryCache, "audio/mpeg")
 	if err != nil {
@@ -59,6 +65,8 @@ func main() {
 		go restartPlayer()
 	}
 
+	netCheck := time.NewTicker(time.Second * 5)
+
 	for {
 		select {
 		case <-deadChan:
@@ -71,6 +79,11 @@ func main() {
 				deadChan <- true
 			}
 			ioutil.WriteFile(*storeFile, []byte(stream), 0600)
+		case <-netCheck.C:
+			expectedRateChange := uint64(64 / 8) // 1s in a 64kbps stream
+			if netmon.RateRX < expectedRateChange && playerCmd != nil && playerCmd.Process != nil {
+				playerCmd.Process.Kill()
+			}
 		}
 	}
 }
