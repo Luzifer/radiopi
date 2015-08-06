@@ -68,8 +68,12 @@ func (g *GoBuilderUpdate) Run() error {
 		liveHash, err := g.getGoBuilderHash()
 		if err == nil && liveHash != g.currentHash {
 			err := g.updateBinary()
-			if err == nil && g.SelfRestart {
-				syscall.Exec(os.Args[0], os.Args[1:], []string{})
+			if err == nil {
+				if g.SelfRestart {
+					syscall.Exec(os.Args[0], os.Args[1:], []string{})
+				}
+			} else {
+				fmt.Printf("Update failed: %s\n", err)
 			}
 		}
 		<-time.After(g.UpdateInterval)
