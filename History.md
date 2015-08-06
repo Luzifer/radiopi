@@ -1,4 +1,14 @@
 
+0.6.0 / 2015-08-07
+==================
+
+  * Install directly due to new autoupdate
+  * Kill all running mpg123 instances on restart
+  * Implemented improved autoupdate
+  * Add dynamic version on build
+  * Monitor interfaces
+  * Added license file
+
 0.5.0 / 2015-05-24
 ==================
 
