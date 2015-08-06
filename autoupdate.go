@@ -4,7 +4,6 @@ import (
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -14,6 +13,7 @@ import (
 	"time"
 
 	"github.com/Luzifer/gobuilder/builddb"
+	"github.com/inconshreveable/go-update"
 )
 
 func init() {
@@ -115,18 +115,6 @@ func (g *GoBuilderUpdate) updateBinary() error {
 		g.goBuilderFilename,
 	)
 
-	resp, err := http.Get(dlURL)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	self, err := os.Create(g.runningFile)
-	if err != nil {
-		return err
-	}
-	defer self.Close()
-
-	_, err = io.Copy(self, resp.Body)
+	err, _ := update.New().FromUrl(dlURL)
 	return err
 }
