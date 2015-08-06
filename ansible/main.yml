@@ -5,7 +5,7 @@
   sudo: yes
 
   vars:
-    radiopi_version: v0.5.0
+    radiopi_version: master
 
   tasks:
     - include_vars: vars/secret.yml
@@ -57,19 +57,12 @@
         creates: "/opt/ansible-assets/radiopi_{{ radiopi_version }}_linux-arm.zip"
 
     - name: install radiopi server
-      shell: "unzip -o /opt/ansible-assets/radiopi_{{ radiopi_version }}_linux-arm.zip && mv radiopi/radiopi /usr/local/bin/radiopi_{{ radiopi_version }}"
+      shell: "unzip -o /opt/ansible-assets/radiopi_{{ radiopi_version }}_linux-arm.zip && mv radiopi/radiopi /usr/local/bin/radiopi"
       args:
         chdir: /tmp/
-        creates: "/usr/local/bin/radiopi_{{ radiopi_version }}"
-
-    - name: Link radiopi server
-      file:
-        src: "/usr/local/bin/radiopi_{{ radiopi_version }}"
-        dest: /usr/local/bin/radiopi
-        state: link
+        creates: "/usr/local/bin/radiopi"
       notify:
         - restart radiopi
-
 
     - name: Start radiopi-server on startup
       copy: src=files/bash_profile dest=/home/pi/.bash_profile owner=pi group=pi
