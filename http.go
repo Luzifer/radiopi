@@ -72,3 +72,8 @@ func serveStatic(res http.ResponseWriter, r *http.Request) {
 
 	res.Write(file)
 }
+
+func getVersion(res http.ResponseWriter, r *http.Request) {
+	res.Header().Set("Content-Type", "text/plain")
+	res.Write([]byte(version))
+}

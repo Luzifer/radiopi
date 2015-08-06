@@ -55,6 +55,7 @@ func main() {
 	r.HandleFunc("/v1/play", playStream).Methods("POST")
 	r.HandleFunc("/v1/search", getFilteredDirectoryList).Methods("GET")
 	r.HandleFunc("/v1/favorites", getFavorites).Methods("GET")
+	r.HandleFunc("/v1/version", getVersion).Methods("GET")
 	r.PathPrefix("/").HandlerFunc(serveStatic)
 
 	http.Handle("/", r)

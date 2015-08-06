@@ -1,4 +1,5 @@
 $ ->
+  loadVersion()
   $('#play').bind 'click', playButtonClick
   $('#searchInput').bind 'keydown', () ->
     clearTimeout(window.searchInputTimer)
@@ -50,3 +51,7 @@ loadFavorites = () ->
       a.data 'url', entry.url
       a.bind 'click', urlListClick
       a.appendTo $('#favoriteList')
+
+loadVersion = () ->
+  $.get "/v1/version", (data) ->
+    $("#version").text(data)
