@@ -1,0 +1,40 @@
+{
+	"ImportPath": "github.com/Luzifer/radiopi",
+	"GoVersion": "go1.4.2",
+	"Deps": [
+		{
+			"ImportPath": "github.com/Luzifer/gobuilder/autoupdate",
+			"Comment": "v1.30.0-1-g88534ff",
+			"Rev": "88534ff613325126527bbe37aac44ed316fa58c7"
+		},
+		{
+			"ImportPath": "github.com/Luzifer/gobuilder/builddb",
+			"Comment": "v1.30.0-1-g88534ff",
+			"Rev": "88534ff613325126527bbe37aac44ed316fa58c7"
+		},
+		{
+			"ImportPath": "github.com/gorilla/context",
+			"Rev": "215affda49addc4c8ef7e2534915df2c8c35c6cd"
+		},
+		{
+			"ImportPath": "github.com/gorilla/mux",
+			"Rev": "8096f47503459bcc74d1f4c487b7e6e42e5746b5"
+		},
+		{
+			"ImportPath": "github.com/inconshreveable/go-update",
+			"Rev": "68f5725818189545231c1fd8694793d45f2fc529"
+		},
+		{
+			"ImportPath": "github.com/kardianos/osext",
+			"Rev": "8fef92e41e22a70e700a96b29f066cda30ea24ef"
+		},
+		{
+			"ImportPath": "github.com/kr/binarydist",
+			"Rev": "9955b0ab8708602d411341e55fffd7e0700f86bd"
+		},
+		{
+			"ImportPath": "gopkg.in/yaml.v2",
+			"Rev": "49c95bdc21843256fb6c4e0d370a05f24a0bf213"
+		}
+	]
+}
