@@ -1,4 +1,12 @@
 
+0.7.0 / 2015-08-11
+==================
+
+  * Kill all running players on startup
+  * Allow silencing by playing "off" stream
+  * Fix: Kill command needs to get executed
+  * Saved dependencies
+
 0.6.2 / 2015-08-07
 ==================
 
