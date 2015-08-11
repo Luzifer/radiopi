@@ -75,7 +75,7 @@ func main() {
 		case stream := <-streamChangeChan:
 			playingStream = stream
 			if playerCmd != nil && playerCmd.Process != nil {
-				exec.Command("/usr/bin/killall", "mpg123")
+				exec.Command("/usr/bin/killall", "mpg123").Run()
 			} else {
 				deadChan <- true
 			}
