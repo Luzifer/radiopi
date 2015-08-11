@@ -51,6 +51,8 @@ func init() {
 }
 
 func main() {
+	killAllPlayer()
+
 	r := mux.NewRouter()
 	r.HandleFunc("/v1/play", playStream).Methods("POST")
 	r.HandleFunc("/v1/search", getFilteredDirectoryList).Methods("GET")
@@ -75,7 +77,7 @@ func main() {
 		case stream := <-streamChangeChan:
 			playingStream = stream
 			if playerCmd != nil && playerCmd.Process != nil {
-				exec.Command("/usr/bin/killall", "mpg123").Run()
+				killAllPlayer()
 			} else {
 				deadChan <- true
 			}
@@ -99,4 +101,8 @@ func restartPlayer() {
 		}
 	}
 	deadChan <- true
+}
+
+func killAllPlayer() {
+	exec.Command("/usr/bin/killall", "mpg123").Run()
 }
