@@ -1,4 +1,9 @@
 
+0.7.1 / 2015-08-12
+==================
+
+  * Use new updater version with checksum verification
+
 0.7.0 / 2015-08-11
 ==================
 
