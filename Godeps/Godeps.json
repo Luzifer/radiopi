@@ -4,13 +4,13 @@
 	"Deps": [
 		{
 			"ImportPath": "github.com/Luzifer/gobuilder/autoupdate",
-			"Comment": "v1.30.0-1-g88534ff",
-			"Rev": "88534ff613325126527bbe37aac44ed316fa58c7"
+			"Comment": "v1.30.0-2-gd8a4add",
+			"Rev": "d8a4add0cbb3056b0511d3b492f6871266a58854"
 		},
 		{
 			"ImportPath": "github.com/Luzifer/gobuilder/builddb",
-			"Comment": "v1.30.0-1-g88534ff",
-			"Rev": "88534ff613325126527bbe37aac44ed316fa58c7"
+			"Comment": "v1.30.0-2-gd8a4add",
+			"Rev": "d8a4add0cbb3056b0511d3b492f6871266a58854"
 		},
 		{
 			"ImportPath": "github.com/gorilla/context",
