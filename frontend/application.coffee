@@ -1,10 +1,15 @@
 $ ->
   loadVersion()
   $('#play').bind 'click', playButtonClick
+  $('#stop').bind 'click', stopButtonClick
   $('#searchInput').bind 'keydown', () ->
     clearTimeout(window.searchInputTimer)
     window.searchInputTimer = setTimeout searchInputType, 1000
   loadFavorites()
+
+stopButtonClick = () ->
+  submitPlay 'off'
+  false
 
 playButtonClick = () ->
   url = $('#urlInput').val()
