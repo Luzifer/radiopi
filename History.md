@@ -1,4 +1,10 @@
 
+0.8.0 / 2015-08-16
+==================
+
+  * Updated autoupdater
+  * Added stop-button to frontend
+
 0.7.1 / 2015-08-12
 ==================
 
